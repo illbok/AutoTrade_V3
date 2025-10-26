@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "autotrade-v3"
+version = "0.1.0"
+description = "Upbit Bitcoin automated trading system"
+authors = ["AutoTrade Team <team@example.com>"]
+readme = "README.md"
+packages = [{ include = "autotrade", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.110.0"
+uvicorn = { extras = ["standard"], version = "^0.29.0" }
+pydantic = "^2.6.0"
+pydantic-settings = "^2.1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+httpx = "^0.26.0"
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+
+[build-system]
+requires = ["poetry-core>=1.7.0"]
+build-backend = "poetry.core.masonry.api"

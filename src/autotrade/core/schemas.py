@@ -38,4 +38,63 @@ class StrategySignal(BaseModel):
     created_at_kst: datetime
 
 
-__all__ = ["CandlePayload", "StrategySignal"]
+class PositionLifecycleEvent(BaseModel):
+    """Payload emitted when a position lifecycle event occurs."""
+
+    position_id: str
+    symbol: str
+    action: Literal["open", "close"]
+    status: Literal["requested", "filled", "failed"]
+    side: Literal["buy", "sell"]
+    quantity: float = Field(..., gt=0)
+    price: float | None = Field(default=None, gt=0)
+    leverage: float | None = Field(default=None, gt=0)
+    reason: str | None = None
+    timestamp_utc: datetime
+    timestamp_kst: datetime
+
+
+class RiskLimitBreach(BaseModel):
+    """Payload describing a risk engine breach notification."""
+
+    breach_type: str
+    current_value: float
+    limit_value: float
+    unit: str
+    action_taken: Literal["blocked", "reduced", "liquidated", "alerted"]
+    snapshot_id: str | None = None
+    timestamp_utc: datetime
+    timestamp_kst: datetime
+
+
+class AIParameterProposal(BaseModel):
+    """Payload emitted when the AI service proposes parameter changes."""
+
+    proposal_id: str
+    target: str
+    current_parameters: dict
+    proposed_parameters: dict
+    metric_snapshot: dict | None = None
+    confidence: float | None = Field(default=None, ge=0, le=1)
+    proposed_at_utc: datetime
+    proposed_at_kst: datetime
+
+
+class AIParameterApplication(BaseModel):
+    """Payload emitted when a proposal is applied."""
+
+    proposal_id: str
+    applied_by: str | None = None
+    notes: str | None = None
+    applied_at_utc: datetime
+    applied_at_kst: datetime
+
+
+__all__ = [
+    "CandlePayload",
+    "StrategySignal",
+    "PositionLifecycleEvent",
+    "RiskLimitBreach",
+    "AIParameterProposal",
+    "AIParameterApplication",
+]

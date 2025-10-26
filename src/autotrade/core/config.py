@@ -83,6 +83,12 @@ class Settings(BaseSettings):
     redis_port: int = Field(default=6379, validation_alias="REDIS_PORT")
     redis_ssl: bool = Field(default=False, validation_alias="REDIS_SSL")
     redis_db: int | None = Field(default=None, validation_alias="REDIS_DB")
+    message_backend: Literal["redis"] = Field(
+        default="redis", validation_alias="MESSAGE_BACKEND"
+    )
+    message_namespace: str = Field(
+        default="autotrade", validation_alias="MESSAGE_NAMESPACE"
+    )
 
     model_config = {
         "env_file": ".env",
@@ -124,6 +130,14 @@ class Settings(BaseSettings):
         if self.redis_db is not None:
             kwargs["db"] = self.redis_db
         return kwargs
+
+    def namespaced_stream(self, stream: str) -> str:
+        """Return the fully namespaced stream identifier for the message bus."""
+
+        namespace = self.message_namespace.strip()
+        if not namespace:
+            return stream
+        return f"{namespace}.{stream}"
 
 
 @lru_cache

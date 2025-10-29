@@ -7,10 +7,12 @@ from fastapi import FastAPI
 from autotrade.core.clock import now
 from autotrade.core.config import settings
 from autotrade.core.logging import configure_logging
+from autotrade.app.routes.chart import router as chart_router
 
 configure_logging()
 
 app = FastAPI(title=settings.app_name)
+app.include_router(chart_router)
 
 
 @app.get("/health", tags=["system"])
